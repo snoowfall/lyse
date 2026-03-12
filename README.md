@@ -41,7 +41,7 @@ chmod +x lyse.py
 > [!TIP]
 > You can also adjust offset with the scroll wheel.
 
-Settings auto-save to `~/.config/lyricspot/settings.json`
+Settings auto-save to `~/.config/lyse/settings.json`
 
 Reset all settings: `./lyse.py --reset`
 
