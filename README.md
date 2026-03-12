@@ -46,5 +46,5 @@ Settings auto-save to `~/.config/lyse/settings.json`
 Reset all settings: `./lyse.py --reset`
 
 <br/>
-<h6>© 2026 snoowfall</h6>  
+<h5>© 2026 snoowfall</h5>  
 <h6>This documentation is licensed under CC BY-NC 4.0. Do not reuse without permission.</h6>
