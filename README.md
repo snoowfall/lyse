@@ -5,7 +5,7 @@ Terminal synced lyrics viewer for your currently playing music.
 
 ## Install
 
-**Requirements:** Python 3.6+, `playerctl`
+**Requirements:** `python`, `playerctl`
 
 ### AUR install
 ```bash
@@ -28,23 +28,24 @@ chmod +x lyse.py
 ./lyse.py
 ```
 
+> [!TIP]
+> Run `lyse -h` to see additional arguments.
+  
 ## Keys
 
 - `q` - quit
-- `↑/↓` - adjust sync offset
+- `j/k` - adjust sync offset
 - `u` - toggle UI
+- `b` - toggle bold active
 - `c` - toggle centered
 - `d` - toggle dynamic colors
 - `i` - toggle dim inactive
-- `shift+u` - toggle uppercase<br/>
-  
-> [!TIP]
-> You can also adjust offset with the scroll wheel.
+- `</>` - seek 5 seconds
+- `shift+u` - toggle uppercase<br/>  
 
-Settings auto-save to `~/.config/lyse/settings.json`
+## Miscellanous
+Settings auto-save to `~/.config/lyse/settings.json`  
+Reset all settings: `lyse --reset`  
 
-Reset all settings: `./lyse.py --reset`
-
-<br/>
-<h5>© 2026 snoowfall</h5>  
-<h6>This documentation is licensed under CC BY-NC 4.0. Do not reuse without permission.</h6>
+<br/>  
+<h6>© 2026 snoowfall |This documentation is licensed under CC BY-NC 4.0. Do not reuse without permission.</h6>
