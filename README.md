@@ -1,7 +1,7 @@
 # lyse
 Terminal synced lyrics viewer for your currently playing music.
 
-<img width="1313" height="757" alt="image" src="https://github.com/user-attachments/assets/efa6eff7-3a3d-4011-8bbe-3079567ac8d4" />
+<img width="1250" height="901" alt="2026-03-13-142513_hyprshot" src="https://github.com/user-attachments/assets/246943a6-0c90-4aea-b67f-9032337c4539" />
 
 ## Install
 
