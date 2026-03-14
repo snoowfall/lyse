@@ -4,13 +4,14 @@
 # make a pr if you have something to share, or suggest cool stuff in discussions
 # https://github.com/snoowfall/lyse 
 
-__version__ = "2.2.1"
+__version__ = "2.2.2"
 # full rewrite done in 2.0.0 to remove traces of ex-fork code
 # qol updates in 2.1.0
 # stdout piping in 2.1.1 (suggested by u/shadowe1ite) 
 # 2.1.2-2.1.3 fixes 
 # 2.2.0 customizable colors through the json (~/.config/lyse/), thanks hooxoo
 # 2.2.1 mpris fix
+# 2.2.2 another mpris fix
 
 import os
 import sys
@@ -206,7 +207,7 @@ class Lyse:
         # new fallback so it might find some shit for some songs
         params = urllib.parse.urlencode({"q": f"{artist} {title}"})
         try:
-            with urllib.request.urlopen(f"{LRCLIB_SEARCH_URL}?{params}", timeout=6) as req:
+            with urllib.request.urlopen(f"{LRCLIB_FB_URL}?{params}", timeout=6) as req:
                 results = json.loads(req.read())
             lrc, synced = _best_from_results(results)
             if lrc:
