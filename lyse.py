@@ -4,13 +4,13 @@
 # make a pr if you have something to share, or suggest cool stuff in discussions
 # https://github.com/snoowfall/lyse 
 
-__version__ = "2.2.0"
+__version__ = "2.2.1"
 # full rewrite done in 2.0.0 to remove traces of ex-fork code
 # qol updates in 2.1.0
 # stdout piping in 2.1.1 (suggested by u/shadowe1ite) 
 # 2.1.2-2.1.3 fixes 
 # 2.2.0 customizable colors through the json (~/.config/lyse/), thanks hooxoo
-
+# 2.2.1 mpris fix
 
 import os
 import sys
@@ -202,23 +202,27 @@ class Lyse:
                 lines.append((mins * 60 + secs, text))
         return sorted(lines)
 
-    def _poll(self):
+    def _poll(self): # should be fixed to support everything now idk
         while self.running:
             track = self.poller.now_playing()
             with self.lock:
+                prev_track = self.track
                 self.track = track
-                if track and track["track_id"] and track["track_id"] != self._last_id: # should(?) fix issues with some players
-                    self._last_id = track["track_id"]
-                    self.lyrics = [(0, "loading lyrics, hang on")]
-                    self.synced = False
-                    t = track.copy()
-                    def _do_fetch(t=t):
-                        lyrics, synced = self._fetch_lyrics(t["title"], t["artist"], t["album"], t["duration"])
-                        with self.lock:
-                            if self._last_id == t["track_id"]:
-                                self.lyrics = lyrics
-                                self.synced = synced
-                    threading.Thread(target=_do_fetch, daemon=True).start()
+                if track:
+                    id_changed    = track["track_id"] and track["track_id"] != self._last_id
+                    title_changed = track["title"] != (prev_track or {}).get("title")
+                    if id_changed or title_changed:
+                        self._last_id = track["track_id"]
+                        self.lyrics = [(0, "loading lyrics, hang on")]
+                        self.synced = False
+                        t = track.copy()
+                        def _do_fetch(t=t):
+                            lyrics, synced = self._fetch_lyrics(t["title"], t["artist"], t["album"], t["duration"])
+                            with self.lock:
+                                if self._last_id == t["track_id"] or self.track and self.track["title"] == t["title"]:
+                                    self.lyrics = lyrics
+                                    self.synced = synced
+                        threading.Thread(target=_do_fetch, daemon=True).start()
             time.sleep(POLL_INTERVAL)
 
     def _apply_colors(self, scr):
