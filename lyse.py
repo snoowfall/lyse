@@ -232,11 +232,10 @@ class Lyse:
         params = urllib.parse.urlencode({
             "track_name":  title,
             "artist_name": artist,
-            "album_name":  album,
             "duration":    int(duration),
         })
         try:
-            with urllib.request.urlopen(f"{LRCLIB_URL}?{params}", timeout=5) as r:
+            with urllib.request.urlopen(f"{LRCLIB_URL}?{params}", timeout=10) as r:
                 data = json.loads(r.read())
             if lrc := data.get("syncedLyrics"):
                 return lrc, True
@@ -249,7 +248,7 @@ class Lyse:
     def _fetch_fallback(self, title, artist):
         params = urllib.parse.urlencode({"q": f"{artist} {title}"})
         try:
-            with urllib.request.urlopen(f"{LRCLIB_FB_URL}?{params}", timeout=5) as r:
+            with urllib.request.urlopen(f"{LRCLIB_FB_URL}?{params}", timeout=10) as r:
                 results = json.loads(r.read())
             for entry in results:
                 if entry.get("syncedLyrics"):
