@@ -49,7 +49,7 @@ chmod +x lyse.py
 | `/`     | search for lyrics manually    |
 | `r`     | retry lyrics fetch            |
 | `?`     | show help overlay             |
-| `q`/Esc | quit                          |
+| `q`/esc | quit                          |
 
 ## Arguments
 
