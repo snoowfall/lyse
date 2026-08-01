@@ -1,62 +1,63 @@
-# Rewrite plan
+# lyse2
 
-`lyse2` is the branch for a rewrite. `main` stays on the current Python app
-until the rewrite can replace it. The public name stays **Lyse**; `lyse2` is
-only the branch name.
+WIP cross-platform rewrite. `main` remains the Python/Linux release.
 
-## Goal
+Public name: **Lyse**. `lyse2` is only the development branch name.
 
-Build a fast terminal lyrics app for Linux, macOS, and Windows.
+## Scope
 
-It must show the current track, fetch lyrics from LRCLIB, display synced lyrics,
-and work without a GUI. A desktop GUI is not part of this rewrite.
-
-## Shape of the app
-
-Keep the app core separate from the operating system code.
-
-- The core handles lyrics, cache, offset, commands, and screen state.
-- A player backend gets track information and sends seek commands.
-- The terminal code draws the UI and reads key presses.
-
-Start with one player backend per platform:
-
-| Platform | Backend |
-| --- | --- |
-| Linux | MPRIS via `playerctl` |
-| macOS | System media controls |
-| Windows | Global System Media Transport Controls |
-
-Use the normal config and cache directory for each operating system. Do not use
-`~/.config` or `~/.cache` on macOS and Windows. The terminal UI must work in
-common Unix terminals, Windows Terminal, and PowerShell.
-
-## Build order
-
-1. Pick the language and create the project structure.
-2. Build the core and test it without a real player.
-3. Add Linux support and match the current app's features.
-4. Add macOS support.
-5. Add Windows support.
-6. Package releases and document supported players and terminals.
-
-## Required before release
-
-The rewrite needs these features before it replaces the Python version:
-
-- Track detection and lyric lookup
-- Synced and plain lyrics
+- Terminal UI only
+- Linux, macOS, Windows
+- Current track + position from the active media player
+- LRCLIB lookup, synced lyrics, plain lyrics
 - Offset controls
-- `--pipe` and `--live`
-- Existing keyboard controls where the terminal supports them
-- Clear errors when no supported player is available
+- `--pipe` / `--live`
 
-Test it with real players on all three operating systems. Publish a table that
-lists which players are supported on each platform.
+Not in scope: GUI, account system, lyric editing, a plugin API.
 
-## Release
+## Design constraints
 
-Keep `main` on the Python version until the rewrite passes the checks above.
-Tag the final Python release, then merge `lyse2` into `main` for the next major
-Lyse release. Include install steps and a short migration guide for existing
-config and pipe users.
+- No platform commands in the core package.
+- Player integration lives behind a small interface: track, state, position,
+  duration, seek.
+- Keep lyric parsing, cache, CLI output, and state updates independent of the
+  terminal renderer.
+- Use the OS config/cache directories. Do not keep Linux paths on Windows or
+  macOS.
+- Do not remove a current feature without documenting it first.
+
+## Player backends
+
+| OS | Backend | Status |
+| --- | --- | --- |
+| Linux | MPRIS / `playerctl` | Existing behaviour to match |
+| Windows | GSMTC | Need implementation and player testing |
+| macOS | Native media session or per-player adapter | Need investigation |
+
+macOS is the uncertain one. Do not promise broad player support until it has
+been tested with real apps.
+
+## Work
+
+- [ ] Pick runtime and packaging approach.
+- [ ] Create project layout and CI for Linux, macOS, and Windows.
+- [ ] Implement lyric parsing, LRCLIB client, cache, and offset logic.
+- [ ] Define the player backend interface.
+- [ ] Implement Linux backend and match current CLI behaviour.
+- [ ] Implement terminal UI and input handling on Unix and Windows terminals.
+- [ ] Implement Windows backend.
+- [ ] Investigate and implement macOS backend.
+- [ ] Add tests with fake players and parser/cache fixtures.
+- [ ] Test against real players on each OS.
+- [ ] Write install docs and a supported-player matrix.
+
+## Before merging into `main`
+
+- Linux feature parity with the Python app.
+- `--pipe` and `--live` work.
+- Clear error when no supported player is found.
+- Windows and macOS builds run and have documented player support.
+- A release package exists for every supported OS.
+
+Keep the final Python release tagged. Merge this branch only when the rewrite is
+usable as the default install.
