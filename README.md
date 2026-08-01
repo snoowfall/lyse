@@ -3,11 +3,10 @@ Realtime synced lyrics in your terminal, for whatever's playing.
 
 > [!NOTE]
 > The `main` branch is the stable Python implementation for Linux. The
-> [`lyse2`](https://github.com/snoowfall/lyse/tree/lyse2) branch is an
-> in-progress, cross-platform rewrite;
-> its goals, compatibility expectations, and migration plan are in
-> [`docs/lyse2-roadmap.md`](docs/lyse2-roadmap.md). The current release will not
-> be replaced until the rewrite is ready for everyday use.
+> [`lyse2`](https://github.com/snoowfall/lyse/tree/lyse2) is the development
+> branch for the cross-platform rewrite. It will become the next major Lyse
+> release only after it is ready to replace the current Python version. See the
+> [`rewrite plan`](docs/lyse2-roadmap.md) for the scope and release checks.
 
 <img width="1541" height="1086" alt="2026-06-25-163007_hyprshot" src="https://github.com/user-attachments/assets/64a25cd0-8f97-475c-a62c-577c1d71ec48" />
 

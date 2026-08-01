@@ -1,75 +1,62 @@
-# Lyse 2 rewrite roadmap
+# Rewrite plan
 
-## Purpose
+`lyse2` is the branch for a rewrite. `main` stays on the current Python app
+until the rewrite can replace it. The public name stays **Lyse**; `lyse2` is
+only the branch name.
 
-Lyse 2 is a cross-platform, terminal-first rewrite of Lyse. It should feel like
-the same product: show lyrics for the active song, keep them synchronized when
-timing is available, and stay pleasant to use from a terminal. The current
-Python application on `main` remains the stable Linux release while this work
-is in progress.
+## Goal
 
-The rewrite is intended to improve portability, responsiveness, testability,
-and maintainability. A new GUI product is outside this project's initial scope.
+Build a fast terminal lyrics app for Linux, macOS, and Windows.
 
-## Platform strategy
+It must show the current track, fetch lyrics from LRCLIB, display synced lyrics,
+and work without a GUI. A desktop GUI is not part of this rewrite.
 
-The application core must not invoke a platform command directly. It should
-depend on two narrow interfaces instead:
+## Shape of the app
 
-- **Playback provider:** reads the active track, player state, duration,
-  position, and optional seek support.
-- **Terminal/UI provider:** renders the terminal experience and handles input
-  in a way appropriate for the host terminal.
+Keep the app core separate from the operating system code.
 
-The first supported providers should be:
+- The core handles lyrics, cache, offset, commands, and screen state.
+- A player backend gets track information and sends seek commands.
+- The terminal code draws the UI and reads key presses.
 
-| Platform | Playback approach | Notes |
-| --- | --- | --- |
-| Linux | MPRIS, initially through `playerctl` | Preserve the current broad player support. |
-| macOS | Native media-session support, with app-specific adapters only where needed | Start with the common system-visible players. |
-| Windows | Global System Media Transport Controls | Support players that expose an OS media session. |
+Start with one player backend per platform:
 
-Configuration and cache paths must use platform-native locations rather than
-hard-coded Linux paths. The terminal layer must run in Windows Terminal and
-PowerShell as well as common Unix terminals.
+| Platform | Backend |
+| --- | --- |
+| Linux | MPRIS via `playerctl` |
+| macOS | System media controls |
+| Windows | Global System Media Transport Controls |
 
-## Delivery milestones
+Use the normal config and cache directory for each operating system. Do not use
+`~/.config` or `~/.cache` on macOS and Windows. The terminal UI must work in
+common Unix terminals, Windows Terminal, and PowerShell.
 
-1. **Foundation:** choose the runtime and project layout; define typed playback,
-   lyric-source, cache, and UI interfaces; add automated tests for the
-   platform-independent core.
-2. **Parity on Linux:** implement the Linux provider and reproduce the existing
-   command-line, pipe-mode, lyric fetch, cache, offset, and key controls.
-3. **macOS and Windows support:** implement media-session providers, native
-   data locations, and terminal compatibility; test against real players on
-   each platform.
-4. **Release readiness:** package supported platform builds, publish an
-   explicit compatibility matrix, write migration notes, and collect early-user
-   feedback before making Lyse 2 the default branch release.
+## Build order
 
-## Compatibility promise
+1. Pick the language and create the project structure.
+2. Build the core and test it without a real player.
+3. Add Linux support and match the current app's features.
+4. Add macOS support.
+5. Add Windows support.
+6. Package releases and document supported players and terminals.
 
-Before Lyse 2 becomes the default release, it should preserve these user-facing
-capabilities where the operating system exposes them:
+## Required before release
 
-- Automatic active-track detection and lyric lookup
-- Synced and plain lyric display
-- Adjustable lyric offset
-- `--pipe` and `--live` output for status-bar integrations
-- A terminal interface with the established keyboard controls
+The rewrite needs these features before it replaces the Python version:
 
-Unsupported player or terminal combinations should fail clearly and explain
-which playback provider is missing. Platform-specific limitations belong in a
-published compatibility matrix, not in silent fallbacks.
+- Track detection and lyric lookup
+- Synced and plain lyrics
+- Offset controls
+- `--pipe` and `--live`
+- Existing keyboard controls where the terminal supports them
+- Clear errors when no supported player is available
 
-## Migration and release plan
+Test it with real players on all three operating systems. Publish a table that
+lists which players are supported on each platform.
 
-- Keep the current Python release available from `main` until Lyse 2 reaches
-  feature and reliability parity for Linux.
-- Preserve the final Python state with a version tag and document its support
-  status in the release notes.
-- Release Lyse 2 as the next major version, with installation instructions per
-  platform and a concise migration guide for existing configuration and pipe
-  users.
-- Retain the `lyse2` branch as the rewrite's development history; merge it into
-  `main` only once the release-readiness milestone is met.
+## Release
+
+Keep `main` on the Python version until the rewrite passes the checks above.
+Tag the final Python release, then merge `lyse2` into `main` for the next major
+Lyse release. Include install steps and a short migration guide for existing
+config and pipe users.
